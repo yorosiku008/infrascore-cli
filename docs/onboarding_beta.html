@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InfraScore JP β版 オンボーディングガイド</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #0d1117; color: #e6edf3; line-height: 1.7; }
+    .header { background: linear-gradient(135deg, #0f4c2a 0%, #061a10 100%); padding: 48px 24px; text-align: center; border-bottom: 1px solid #30363d; }
+    .header h1 { font-size: 2rem; font-weight: 700; color: #f0f6fc; }
+    .header p { color: #8b949e; margin-top: 8px; font-size: 1rem; }
+    .badge { display: inline-block; background: #0f4c2a; color: #56d364; font-size: 0.75rem; font-weight: 700; padding: 2px 10px; border-radius: 20px; border: 1px solid #238636; margin-bottom: 12px; letter-spacing: 0.05em; }
+    .container { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+    .step { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; position: relative; }
+    .step-number { position: absolute; top: -14px; left: 24px; background: #0f4c2a; color: #fff; font-size: 0.8rem; font-weight: 700; padding: 2px 12px; border-radius: 20px; }
+    .step h2 { font-size: 1.15rem; font-weight: 700; color: #f0f6fc; margin-bottom: 12px; }
+    .step p { color: #8b949e; font-size: 0.95rem; margin-bottom: 12px; }
+    pre { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 0.875rem; color: #a5f3a5; overflow-x: auto; margin: 12px 0; }
+    code { background: #1c2128; color: #ff7b72; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.85em; }
+    .note { background: #1c2128; border-left: 3px solid #388bfd; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0; color: #79c0ff; font-size: 0.9rem; }
+    .success { background: #1c2128; border-left: 3px solid #3fb950; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0; color: #56d364; font-size: 0.9rem; }
+    .axis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }
+    .axis-card { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; text-align: center; }
+    .ax-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; color: #56d364; }
+    .ax-weight { font-size: 1.2rem; font-weight: 700; color: #f0f6fc; }
+    .ax-desc { font-size: 0.75rem; color: #8b949e; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.875rem; }
+    th { background: #1c2128; color: #8b949e; font-weight: 600; padding: 10px 14px; text-align: left; border-bottom: 1px solid #30363d; }
+    td { padding: 10px 14px; border-bottom: 1px solid #21262d; color: #e6edf3; }
+    tr:last-child td { border-bottom: none; }
+    .footer { text-align: center; padding: 40px 24px; color: #484f58; font-size: 0.85rem; border-top: 1px solid #21262d; }
+    .footer a { color: #58a6ff; text-decoration: none; }
+    h3 { color: #f0f6fc; font-size: 1rem; margin: 18px 0 8px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">β版</div>
+  <h1>InfraScore JP オンボーディングガイド</h1>
+  <p>AWSインフラ健全性スコアリングCLI — 5分でセットアップ完了</p>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-number">STEP 1</div>
+    <h2>動作環境の確認</h2>
+    <p>InfraScore JP は Python 3.9 以上が必要です。以下のコマンドで確認してください。</p>
+    <pre>python --version
+# Python 3.9.x 以上であれば OK</pre>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-number">STEP 2</div>
+    <h2>リポジトリのクローンとインストール</h2>
+    <pre>git clone https://github.com/yorosiku008/infrascore-cli.git
+cd infrascore-cli
+pip install -r requirements.txt</pre>
+    <div class="note">rich（ターミナル描画）と boto3（AWS SDK）がインストールされます。</div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-number">STEP 3</div>
+    <h2>デモモードで動作確認（AWS不要）</h2>
+    <p>AWS認証情報がなくてもデモデータで機能確認できます。</p>
+    <pre>python main.py --demo</pre>
+    <div class="success">スコアバー、グレード、改善項目の一覧が表示されれば成功です。</div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-number">STEP 4</div>
+    <h2>AWS認証情報の設定</h2>
+    <p>実際のAWS環境をスキャンするには、AWS認証情報が必要です。</p>
+    <pre>aws configure
+# または ~/.aws/credentials に直接記載</pre>
+    <div class="note">必要なIAM権限: <code>cloudwatch:DescribeAlarms</code>, <code>cloudwatch:GetMetricStatistics</code>, <code>ec2:DescribeSecurityGroups</code>, <code>ec2:DescribeVolumes</code>, <code>s3:ListBuckets</code>, <code>s3:GetBucketEncryption</code></div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-number">STEP 5</div>
+    <h2>実環境のスキャン実行</h2>
+    <pre># デフォルトプロファイル
+python main.py
+
+# 特定プロファイルを指定
+python main.py --profile my-aws-profile
+
+# Markdownレポートも保存
+python main.py --profile my-aws-profile --output-md</pre>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-number">STEP 6</div>
+    <h2>4軸スコアリング — 評価内容</h2>
+    <p>NIST・AWS Well-Architectedフレームワークに基づく4軸で評価します。</p>
+    <div class="axis-grid">
+      <div class="axis-card">
+        <div class="ax-label">可用性</div>
+        <div class="ax-weight">35%</div>
+        <div class="ax-desc">CloudWatchアラート / ELB 5xxエラー率 / RDS可用性</div>
+      </div>
+      <div class="axis-card">
+        <div class="ax-label">パフォーマンス</div>
+        <div class="ax-weight">25%</div>
+        <div class="ax-desc">CPU使用率 / メモリ使用率 / p95レイテンシ</div>
+      </div>
+      <div class="axis-card">
+        <div class="ax-label">セキュリティ</div>
+        <div class="ax-weight">25%</div>
+        <div class="ax-desc">危険ポート開放 / MFA設定 / S3暗号化</div>
+      </div>
+      <div class="axis-card">
+        <div class="ax-label">コスト効率</div>
+        <div class="ax-weight">15%</div>
+        <div class="ax-desc">RIカバレッジ / アイドルEC2 / 未アタッチEBS</div>
+      </div>
+    </div>
+
+    <h3>グレード基準</h3>
+    <table>
+      <tr><th>グレード</th><th>スコア</th><th>評価</th></tr>
+      <tr><td>S</td><td>90〜100</td><td>優秀 — 継続監視のみ</td></tr>
+      <tr><td>A</td><td>80〜89</td><td>良好 — 軽微な改善を推奨</td></tr>
+      <tr><td>B</td><td>70〜79</td><td>普通 — 計画的な改善が必要</td></tr>
+      <tr><td>C</td><td>60〜69</td><td>要注意 — 優先的な対応が必要</td></tr>
+      <tr><td>D</td><td>50〜59</td><td>不良 — 早急な対応が必要</td></tr>
+      <tr><td>E</td><td>0〜49</td><td>危険 — 即時対応が必要</td></tr>
+    </table>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-number">STEP 7</div>
+    <h2>CLIオプション一覧</h2>
+    <table>
+      <tr><th>オプション</th><th>説明</th><th>例</th></tr>
+      <tr><td><code>--demo</code></td><td>デモデータで動作確認（AWS不要）</td><td><code>python main.py --demo</code></td></tr>
+      <tr><td><code>--profile</code></td><td>AWSプロファイル名を指定</td><td><code>--profile staging</code></td></tr>
+      <tr><td><code>--output-md</code></td><td>Markdownレポートをファイル出力</td><td><code>--output-md</code></td></tr>
+    </table>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step">
+    <div class="step-number">STEP 8</div>
+    <h2>フィードバックのお願い</h2>
+    <p>β版をお使いいただきありがとうございます。以下の点についてフィードバックをいただけると大変助かります。</p>
+    <ul style="color:#8b949e; padding-left: 20px; margin-top: 8px;">
+      <li>追加してほしい評価軸・メトリクス</li>
+      <li>スコアリングロジックへの改善提案</li>
+      <li>セットアップで詰まった箇所</li>
+      <li>実際のAWS環境でのスキャン結果に対するご意見</li>
+    </ul>
+    <div class="success" style="margin-top: 16px;">ご連絡先: <a href="mailto:yorosiku008@gmail.com" style="color:#56d364;">yorosiku008@gmail.com</a></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>InfraScore JP β版 — &copy; 2026 yorosiku008</p>
+</div>
+
+</body>
+</html>
