@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 from rich.console import Console
 from rich.table import Table
@@ -21,7 +21,7 @@ def _score_bar(score: int, width: int = 20) -> str:
     return '█' * filled + '░' * (width - filled)
 
 
-def print_report(score_data: Dict) -> None:
+def print_report(score_data: Dict, ai_suggestions: List[str] = None) -> None:
     console = Console(legacy_windows=False)
     total = score_data['total']
     grade = score_data['grade']
@@ -63,20 +63,26 @@ def print_report(score_data: Dict) -> None:
             console.print(f'  {i}. {issue}')
     console.print()
 
+    if ai_suggestions:
+        console.print('[bold bright_cyan]Claude AI 改善提案:[/bold bright_cyan]')
+        for suggestion in ai_suggestions:
+            console.print(f'  {suggestion}')
+        console.print()
 
-def build_md_report(score_data: Dict) -> str:
+
+def build_md_report(score_data: Dict, ai_suggestions: List[str] = None) -> str:
     total = score_data['total']
     grade = score_data['grade']
     lines = [
-        f'# InfraScore JP — Infrastructure Health Report',
-        f'',
+        '# InfraScore JP -- Infrastructure Health Report',
+        '',
         f'**スキャン日時:** {datetime.now().strftime("%Y-%m-%d %H:%M")}',
         f'**総合スコア:** {total} / 100  **グレード:** {grade}',
-        f'',
-        f'## 軸別スコア',
-        f'',
-        f'| 軸 | 重み | スコア |',
-        f'|---|---|---|',
+        '',
+        '## 軸別スコア',
+        '',
+        '| 軸 | 重み | スコア |',
+        '|---|---|---|',
     ]
     for axis_key, (label, weight) in AXIS_LABELS.items():
         s = score_data['axes'].get(axis_key, {}).get('score', 0)
@@ -87,6 +93,11 @@ def build_md_report(score_data: Dict) -> str:
         issues = score_data['axes'].get(axis_key, {}).get('issues', [])
         for issue in issues:
             lines.append(f'- [{label}] {issue}')
+
+    if ai_suggestions:
+        lines += ['', '## Claude AI 改善提案', '']
+        for suggestion in ai_suggestions:
+            lines.append(f'- {suggestion}')
 
     return '\n'.join(lines)
 
