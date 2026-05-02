@@ -28,7 +28,7 @@ def print_report(score_data: Dict) -> None:
     profile = score_data.get('profile', 'default')
     color = GRADE_COLORS.get(grade, 'white')
 
-    console.print(f'\n[bold]*** InfraScore JP — Infrastructure Health Score[/bold]')
+    console.print(f'\n[bold]*** InfraScore JP -- Infrastructure Health Score[/bold]')
     console.print('=' * 60)
     console.print(f'Profile : {profile}')
     console.print(f'Scanned : {datetime.now().strftime("%Y-%m-%d %H:%M")}')
