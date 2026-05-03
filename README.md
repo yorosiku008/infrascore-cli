@@ -1,6 +1,7 @@
 # InfraScore JP
 
 [![Tests](https://github.com/yorosiku008/infrascore-cli/actions/workflows/test.yml/badge.svg)](https://github.com/yorosiku008/infrascore-cli/actions)
+[![Beta](https://img.shields.io/badge/β版-募集中-brightgreen)](mailto:yorosiku008@gmail.com)
 
 AWSインフラ健全性スコアリングCLI — 可用性・パフォーマンス・セキュリティ・コスト効率を100点満点で評価します。
 
